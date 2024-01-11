@@ -4,8 +4,8 @@ import postRoutes from "./postRoutes.js";
 
 const router=Router()
 
-router.use('/api/v1/post',postRoutes);
-router.use('/api/v1/dalle',dalleRoutes);
+router.use('/post',postRoutes);
+router.use('/dalle',dalleRoutes);
 
 
 export default router;

@@ -4,6 +4,7 @@ import { preview } from '../assets'
 import FormField from '../components/FormField'
 import Loader from '../components/Loader'
 import { getRandomPrompt } from '../utils'
+import { aiGenerateImage } from '../helpers/api-communicator'
 
 
 
@@ -20,9 +21,22 @@ function CreatePost() {
   const [loading, setLoading] = useState(false);
 
 
-const generateImage=()=>{
+  const generateImage = async () => {
+    if (form.prompt) {
+      try {
+        setGeneratingImg(true);
+        const data = await aiGenerateImage({ prompt: form.prompt })
+        setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` })
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setGeneratingImg(false)
+      }
+    }else{
+      alert('please enter a prompt')
+    }
 
-}
+  }
 
 
   const handleSubmit = () => {
@@ -30,13 +44,13 @@ const generateImage=()=>{
   }
 
   const handleChange = (e) => {
-setForm({...form,[e.target.name]:e.target.value})
+    setForm({ ...form, [e.target.name]: e.target.value })
   }
 
   const handleSurpriseMe = () => {
-const randomPrompt=getRandomPrompt(form.prompt)
-console.log(randomPrompt)
-setForm({...form,prompt:randomPrompt})
+    const randomPrompt = getRandomPrompt(form.prompt)
+    console.log(randomPrompt)
+    setForm({ ...form, prompt: randomPrompt })
   }
 
   return (
@@ -82,18 +96,18 @@ setForm({...form,prompt:randomPrompt})
         </div>
 
 
-<div className='mt-5 flex gap-5'>
-  <button type='button' onClick={generateImage} className='text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center'>
-    {generatingImg?'Generating...':"Generate"}
-  </button>
-</div>
+        <div className='mt-5 flex gap-5'>
+          <button type='button' onClick={generateImage} className='text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center'>
+            {generatingImg ? 'Generating...' : "Generate"}
+          </button>
+        </div>
 
 
-<div className='mt-10'>
-  <p className='mt-2 text-[#666e75] text-[14px]'>Once you have created the image you want,you can share it with others in the community.</p>
+        <div className='mt-10'>
+          <p className='mt-2 text-[#666e75] text-[14px]'>Once you have created the image you want,you can share it with others in the community.</p>
 
-  <button type='submit' className='mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center'>{loading?"Sharing...":'Share with the community'}</button>
-</div>
+          <button type='submit' className='mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center'>{loading ? "Sharing..." : 'Share with the community'}</button>
+        </div>
 
       </form>
 
